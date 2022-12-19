@@ -63,13 +63,13 @@
                         :let [pair (kp/ed25519)
                               k (kp/account-key pair)
                               a (cell/address i)]]
-                    {:acct        (AccountStatus/create (* (inc i) 1000000) k)
+                    {:acct        (AccountStatus/create (* 1 #_(inc i) 1000000) k)
                      :keypair     pair
                      :key         k
                      :address     a
-                     :peer-status (PeerStatus/create a (* (inc i) 100000))})
-        globals   (.assoc
-                    Constants/INITIAL_GLOBALS
+                     ;; equal stakes for now:
+                     :peer-status (PeerStatus/create a (* 1 #_(inc i) 100000))})
+        globals   (.assoc Constants/INITIAL_GLOBALS
                     2 ;;global_juice_price index
                     (cell/long 1))
         state     (State/create
@@ -178,10 +178,7 @@
                                          (random-transfer peers))
                                        peers
                                        (range txs))
-                                     (share-gossip gossips))
-
-                                 #_(-> (random-transfer peers)
-                                       )))))
+                                     (share-gossip gossips))))))
                :text "step!"})))))))
 
 (defn content [state]
