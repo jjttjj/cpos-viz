@@ -184,63 +184,62 @@
 (defn content [state]
   (ui/dynamic ctx [{:keys [peers peer-color]} @state]
     (ui/vscrollbar
-      (do #_ui/vscroll
-          (ui/column
+      (ui/column
 
-            (let [min-cpoint (apply min
-                               (map (fn [p]
-                                      (.getConsensusPoint p))
-                                 peers))]
-              (list
-                (for [[peer-ix peer] (map-indexed vector peers)
-                      :let
-                      [peer-key (.getPeerKey peer)
-                       ;; todo: peer-color fn should coerce to str?
-                       bg (->color (peer-color (str (.getPeerKey peer))) 255 )
-                       belief (.getBelief peer)
-                       order (.getPeerOrder peer)
-                       ppoint (.getProposalPoint order)
-                       cpoint (.getConsensusPoint order)
-                       min-block-width 5
-                       blocks (->>
-                                (map-indexed
-                                  (fn [ix o]
-                                    [ix
-                                     (str (.getAccountKey o))
-                                     (.getValue o)])
-                                  (.getBlocks order))
-                                (drop (- min-cpoint min-block-width)))
+        (let [min-cpoint (apply min
+                           (map (fn [p]
+                                  (.getConsensusPoint p))
+                             peers))]
+          (list
+            (for [[peer-ix peer] (map-indexed vector peers)
+                  :let
+                  [peer-key (.getPeerKey peer)
+                   ;; todo: peer-color fn should coerce to str?
+                   bg (->color (peer-color (str (.getPeerKey peer))) 255 )
+                   belief (.getBelief peer)
+                   order (.getPeerOrder peer)
+                   ppoint (.getProposalPoint order)
+                   cpoint (.getConsensusPoint order)
+                   min-block-width 5
+                   blocks (->>
+                            (map-indexed
+                              (fn [ix o]
+                                [ix
+                                 (str (.getAccountKey o))
+                                 (.getValue o)])
+                              (.getBlocks order))
+                            (drop (- min-cpoint min-block-width)))
 
-                       ]]
-                  (ui/padding 0 5 0 5
-                    (ui/row
-                      (ui/width 70
-                        (ui/rect (paint/fill bg)
-                          (ui/center
-                            (ui/padding 5 (ui/label {:paint (paint/fill (->color :white))}
-                                            (str "peer" peer-ix))))))
-                      (ui/gap 5 30)
-                      (for [[ix acct-key block] blocks
-                            :let                [color (-> acct-key peer-color ->color)
-                                                 _ (assert color)]]
-                        (list
-                          (ui/stack
-                            (ui/valign 0.5
-                              (ui/rect (paint/fill color)
-                                (ui/gap 30 30)))
-                            (ui/center
-                              (ui/label
-                                {:paint (paint/fill (->color :white))}
-                                ix)))
-                          (ui/gap 2 0)
-                          (ui/rect
-                            (paint/fill (->color :black (if (= (inc ix) cpoint) 255 0)))
-                            (ui/gap 5 30))
-                          (ui/gap 2 0)
-                          (ui/rect
-                            (paint/fill (->color :red (if (= (inc ix) ppoint) 255 0)))
-                            (ui/gap 5 30))
-                          (ui/gap 2 0)))))))))))))
+                   ]]
+              (ui/padding 0 5 0 5
+                (ui/row
+                  (ui/width 70
+                    (ui/rect (paint/fill bg)
+                      (ui/center
+                        (ui/padding 5 (ui/label {:paint (paint/fill (->color :white))}
+                                        (str "peer" peer-ix))))))
+                  (ui/gap 5 30)
+                  (for [[ix acct-key block] blocks
+                        :let                [color (-> acct-key peer-color ->color)
+                                             _ (assert color)]]
+                    (list
+                      (ui/stack
+                        (ui/valign 0.5
+                          (ui/rect (paint/fill color)
+                            (ui/gap 30 30)))
+                        (ui/center
+                          (ui/label
+                            {:paint (paint/fill (->color :white))}
+                            ix)))
+                      (ui/gap 2 0)
+                      (ui/rect
+                        (paint/fill (->color :black (if (= (inc ix) cpoint) 255 0)))
+                        (ui/gap 5 30))
+                      (ui/gap 2 0)
+                      (ui/rect
+                        (paint/fill (->color :red (if (= (inc ix) ppoint) 255 0)))
+                        (ui/gap 5 30))
+                      (ui/gap 2 0))))))))))))
 
 (defn vline []
   (ui/rect (paint/fill (->color :black )) (ui/gap 1 0)))
