@@ -217,7 +217,7 @@
                     (ui/rect (paint/fill bg)
                       (ui/center
                         (ui/padding 5 (ui/label {:paint (paint/fill (->color :white))}
-                                        (str "peer" peer-ix))))))
+                                        (str "Peer " (inc peer-ix)))))))
                   (ui/gap 5 30)
                   (for [[ix acct-key block] blocks
                         :let                [color (-> acct-key peer-color ->color)
@@ -230,7 +230,7 @@
                         (ui/center
                           (ui/label
                             {:paint (paint/fill (->color :white))}
-                            ix)))
+                            (inc ix))))
                       (ui/gap 2 0)
                       (ui/rect
                         (paint/fill (->color :black (if (= (inc ix) cpoint) 255 0)))
